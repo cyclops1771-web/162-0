@@ -181,6 +181,43 @@
   .pc-btn{font-family:"Courier New",monospace;font-size:12px;letter-spacing:.5px;background:var(--navy);color:var(--paper);
     border:2px solid var(--ink);border-radius:4px;padding:9px 13px;cursor:pointer;box-shadow:0 3px 0 var(--shadow)}
   .pc-btn:hover{background:var(--green)}
+  /* settings */
+  #settingsPanel{margin-top:14px}
+  .setting-row{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:10px 2px;border-bottom:1px dashed var(--line)}
+  .setting-row:last-child{border-bottom:none}
+  .setting-row span{font-size:13px;line-height:1.4}
+  .setting-sub{font-size:11.5px;color:var(--ink-2);font-style:italic}
+  .setting-row input[type=checkbox]{width:22px;height:22px;flex:none;accent-color:var(--green);cursor:pointer;margin-top:2px}
+  .daily-msg{max-width:520px;margin:12px auto 0;text-align:center;font-size:13px;color:var(--red);
+    background:#fbf1e6;border:2px solid var(--red);border-radius:6px;padding:10px 14px}
+  /* challenge banner on setup */
+  .challenge-banner{max-width:560px;margin:0 auto 14px;text-align:center;background:var(--navy);color:var(--paper);
+    border:3px solid var(--ink);border-radius:6px;padding:13px 16px;box-shadow:0 5px 0 var(--shadow)}
+  .challenge-banner b{color:var(--gold)}
+  .challenge-banner .cb-rec{font-family:"Courier New",monospace;font-size:22px;font-weight:bold;color:var(--gold);margin-top:4px}
+  /* share block */
+  .share-block{margin-top:18px;padding-top:14px;border-top:2px dashed var(--line);text-align:center}
+  .share-title{font-family:"Courier New",monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--ink-2);margin-bottom:10px}
+  .share-btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+  .share-btn{font-family:"Courier New",monospace;font-size:12px;letter-spacing:.5px;font-weight:bold;color:var(--paper);
+    border:2px solid var(--ink);border-radius:5px;padding:9px 14px;cursor:pointer;box-shadow:0 3px 0 var(--shadow);transition:transform .06s}
+  .share-btn:hover{transform:translateY(-1px)}
+  .share-btn.x{background:#111}
+  .share-btn.fb{background:#1877f2}
+  .share-btn.sms{background:var(--green)}
+  .share-btn.copy{background:var(--ink-2)}
+  .challenge-btn{display:block;margin:12px auto 0;font-family:"Courier New",monospace;font-weight:bold;letter-spacing:1px;
+    text-transform:uppercase;font-size:13px;background:var(--gold);color:var(--ink);border:2px solid var(--ink);
+    border-radius:5px;padding:11px 20px;cursor:pointer;box-shadow:0 4px 0 var(--shadow)}
+  .challenge-btn:hover{transform:translateY(-1px)}
+  .share-note{margin-top:10px;font-size:12px;color:var(--green);font-family:"Courier New",monospace}
+  /* head to head result */
+  .h2h-box{margin:6px 0 12px;border:2px solid var(--ink);border-radius:6px;background:#fbf6e8;padding:12px 14px;text-align:center}
+  .h2h-box .h2h-line{display:flex;justify-content:space-around;align-items:center;gap:10px;font-family:"Courier New",monospace}
+  .h2h-box .h2h-name{font-size:12px;color:var(--ink-2);text-transform:uppercase;letter-spacing:1px}
+  .h2h-box .h2h-w{font-size:30px;font-weight:bold;color:var(--ink)}
+  .h2h-box .h2h-verdict{margin-top:8px;font-size:18px;font-weight:bold}
+  .h2h-box .h2h-vs{font-size:13px;color:var(--ink-2)}
 </style>
 </head>
 <body>
@@ -194,12 +231,28 @@
 
   <!-- SETUP -->
   <section id="setup">
+    <div id="challengeBanner" class="challenge-banner hidden"></div>
     <div class="modes">
       <button class="mode-btn active" data-mode="classic">Classic</button>
       <button class="mode-btn" data-mode="diamondiq">Diamond IQ</button>
     </div>
     <div class="mode-note" id="modeNote">Classic — full peak-season stats are shown on every card.</div>
     <button class="start-btn" id="startBtn">Play Ball ▸</button>
+    <div id="dailyMsg" class="daily-msg hidden"></div>
+
+    <details id="settingsPanel">
+      <summary>Settings</summary>
+      <div class="body howto">
+        <label class="setting-row">
+          <span><b>Use skips</b><br><span class="setting-sub">Show the Skip Team / Skip Decade buttons during the draft.</span></span>
+          <input type="checkbox" id="optSkips" checked>
+        </label>
+        <label class="setting-row">
+          <span><b>One game per day</b><br><span class="setting-sub">Soft daily limit. Honor-system only — it's stored in this browser, so clearing data or using another device/incognito bypasses it. Off by default during beta.</span></span>
+          <input type="checkbox" id="optDaily">
+        </label>
+      </div>
+    </details>
 
     <details>
       <summary>How to Play</summary>
@@ -263,7 +316,20 @@
         <div class="ratingbar"><div id="ratingFill" style="width:0%"></div></div>
         <p style="text-align:center;font-family:'Courier New',monospace;font-size:12px;color:var(--ink-2)" id="ratingTxt"></p>
         <div class="cats" id="cats"></div>
+        <div id="h2hBox" class="h2h-box hidden"></div>
         <button class="action-btn" id="againBtn">New Season ▸</button>
+
+        <div class="share-block">
+          <div class="share-title">Share your result</div>
+          <div class="share-btns">
+            <button class="share-btn x" id="shareX">Post on X</button>
+            <button class="share-btn fb" id="shareFB">Facebook</button>
+            <button class="share-btn sms" id="shareSMS">Text it</button>
+            <button class="share-btn copy" id="shareCopy">Copy link</button>
+          </div>
+          <button class="challenge-btn" id="challengeBtn">⚔ Challenge a friend</button>
+          <div id="shareNote" class="share-note hidden"></div>
+        </div>
       </div>
     </div>
     <div class="card">
@@ -335,8 +401,46 @@ let teamSkips=1, decadeSkips=1;
 let curFr=null, curDec=null;
 let spinning=false;
 let selectedPlayer=null;
+let lastResult=null;          // {wins,losses,bd,roster:[{slot,fr,dec,name,year}]}
+let challenge=null;           // decoded incoming challenge {name?, wins, code}
+let useSkips=true;            // settings
+let dailyLimit=false;
 
 const $ = id => document.getElementById(id);
+const LS_KEY="t162_lastplayed";
+const SET_SKIPS="t162_useskips", SET_DAILY="t162_daily";
+
+/* ---------- settings load/save (localStorage, soft) ---------- */
+function lsGet(k){ try{return localStorage.getItem(k);}catch(e){return null;} }
+function lsSet(k,v){ try{localStorage.setItem(k,v);}catch(e){} }
+function todayStr(){ return new Date().toISOString().slice(0,10); }
+function loadSettings(){
+  useSkips = lsGet(SET_SKIPS)!=="0";          // default ON
+  dailyLimit = lsGet(SET_DAILY)==="1";        // default OFF
+  const s=$("optSkips"), d=$("optDaily");
+  if(s){ s.checked=useSkips; s.onchange=()=>{ useSkips=s.checked; lsSet(SET_SKIPS, useSkips?"1":"0"); applySkipVisibility(); refreshDailyMsg(); }; }
+  if(d){ d.checked=dailyLimit; d.onchange=()=>{ dailyLimit=d.checked; lsSet(SET_DAILY, dailyLimit?"1":"0"); refreshDailyMsg(); }; }
+  applySkipVisibility();
+  refreshDailyMsg();
+}
+function applySkipVisibility(){
+  const disp = useSkips ? "" : "none";
+  const st=$("skipTeam"), sd=$("skipDec");
+  if(st) st.style.display=disp;
+  if(sd) sd.style.display=disp;
+}
+function playedToday(){ return lsGet(LS_KEY)===todayStr(); }
+function refreshDailyMsg(){
+  const el=$("dailyMsg"); if(!el) return;
+  if(dailyLimit && playedToday()){
+    el.classList.remove("hidden");
+    el.innerHTML="You've already played today. Come back tomorrow for a fresh lineup!<br><span style='font-size:11px;opacity:.8'>(This is a per-browser honor-system limit — you can turn it off in Settings.)</span>";
+    $("startBtn").disabled=true; $("startBtn").style.opacity=".5"; $("startBtn").style.cursor="not-allowed";
+  } else {
+    el.classList.add("hidden");
+    $("startBtn").disabled=false; $("startBtn").style.opacity=""; $("startBtn").style.cursor="";
+  }
+}
 
 /* ---------- SETUP UI ---------- */
 document.querySelectorAll(".mode-btn").forEach(b=>{
@@ -352,10 +456,12 @@ $("startBtn").onclick=startGame;
 $("againBtn").onclick=()=>location.reload();
 
 function startGame(){
+  if(dailyLimit && playedToday()){ refreshDailyMsg(); return; }
+  lsSet(LS_KEY, todayStr());
   round=0; roster=[]; filledSlots=new Set(); teamSkips=1; decadeSkips=1; selectedPlayer=null;
   $("setup").classList.add("hidden"); $("result").classList.add("hidden");
   $("game").classList.remove("hidden");
-  renderRoster(); updateSkipBtns(); prepRound();
+  renderRoster(); updateSkipBtns(); applySkipVisibility(); prepRound();
 }
 
 /* ---------- slot eligibility ---------- */
@@ -424,8 +530,8 @@ $("skipTeam").onclick=()=>{ if(teamSkips<1||spinning||!curFr)return; teamSkips--
 $("skipDec").onclick =()=>{ if(decadeSkips<1||spinning||!curDec)return; decadeSkips--; updateSkipBtns(); spin(curFr,null); };
 function updateSkipBtns(){
   $("stCount").textContent=teamSkips; $("sdCount").textContent=decadeSkips;
-  $("skipTeam").disabled=teamSkips<1||!curFr||spinning;
-  $("skipDec").disabled =decadeSkips<1||!curDec||spinning;
+  $("skipTeam").disabled=!useSkips||teamSkips<1||!curFr||spinning;
+  $("skipDec").disabled =!useSkips||decadeSkips<1||!curDec||spinning;
 }
 
 function showPlayers(){
@@ -589,7 +695,149 @@ function showResult(wins,losses,bd){
         <div class="t">${teamNm} · ${m3(pl.obp)} OBP / ${m3(pl.slg)} SLG · ${pl.hr} HR</div></div>`
     }));
   });
+
+  // stash a compact result for sharing / challenges
+  lastResult={ wins, losses, rating:bd.rating,
+    roster: roster.map(r=>({slot:r.slot, fr:r.franch, dec:r.dec, name:r.player.name, year:r.player.year})) };
+
+  // head-to-head verdict if we arrived via a challenge
+  renderH2H(wins);
+  // reset any prior copy/share note
+  $("shareNote").classList.add("hidden");
 }
+
+/* ================= SHARE / CHALLENGE / INIT ================= */
+
+// Base URL of the live game (self-referencing; falls back to known Pages URL)
+function gameBaseURL(){
+  let u = location.origin + location.pathname;
+  if(location.protocol==="file:" || !location.origin || location.origin==="null"){
+    u = "https://cyclops1771-web.github.io/162-0/";
+  }
+  return u;
+}
+
+// Encode a result into a compact URL-safe token.
+function encodeResult(res){
+  const payload={ w:res.wins, r:res.roster.map(p=>[p.slot,p.fr,p.dec,p.name,p.year]) };
+  const json=JSON.stringify(payload);
+  const b64=btoa(unescape(encodeURIComponent(json)));
+  return b64.replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+}
+function decodeResult(token){
+  try{
+    let b64=token.replace(/-/g,'+').replace(/_/g,'/');
+    while(b64.length%4) b64+='=';
+    const json=decodeURIComponent(escape(atob(b64)));
+    const p=JSON.parse(json);
+    if(typeof p.w!=="number"||!Array.isArray(p.r)) return null;
+    return p;
+  }catch(e){ return null; }
+}
+
+function buildShareURL(kind){
+  const token=encodeResult(lastResult);
+  const sep=gameBaseURL().includes('?')?'&':'?';
+  return gameBaseURL()+sep+(kind==='challenge'?'c=':'s=')+token;
+}
+function shareText(){
+  const r=lastResult;
+  return `I went ${r.wins}-${r.losses} with my all-time MLB lineup on 162-0! Can you beat it?`;
+}
+function openShare(url){ window.open(url,'_blank','noopener'); }
+
+$("shareX").onclick=()=>{
+  const u=buildShareURL('view');
+  openShare(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText())}&url=${encodeURIComponent(u)}`);
+};
+$("shareFB").onclick=()=>{
+  const u=buildShareURL('view');
+  openShare(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(u)}&quote=${encodeURIComponent(shareText())}`);
+};
+$("shareSMS").onclick=()=>{
+  const u=buildShareURL('view');
+  window.location.href=`sms:?&body=${encodeURIComponent(shareText()+" "+u)}`;
+};
+$("shareCopy").onclick=async ()=>{
+  await copyToClip(buildShareURL('view'), "Result link copied! Paste it anywhere.");
+};
+$("challengeBtn").onclick=async ()=>{
+  const u=buildShareURL('challenge');
+  const msg=`I challenge you! I went ${lastResult.wins}-${lastResult.losses} on 162-0. Build a lineup and try to beat me: ${u}`;
+  if(navigator.share){
+    try{ await navigator.share({title:"162-0 Challenge", text:msg, url:u}); return; }catch(e){}
+  }
+  await copyToClip(u, "Challenge link copied! Send it to a friend - they'll race your "+lastResult.wins+" wins.");
+};
+
+async function copyToClip(text, okMsg){
+  let ok=false;
+  try{ await navigator.clipboard.writeText(text); ok=true; }
+  catch(e){
+    const ta=document.createElement("textarea"); ta.value=text; ta.style.position="fixed"; ta.style.opacity="0";
+    document.body.appendChild(ta); ta.select();
+    try{ ok=document.execCommand("copy"); }catch(_){}
+    document.body.removeChild(ta);
+  }
+  const n=$("shareNote"); n.classList.remove("hidden");
+  n.textContent= ok ? okMsg : ("Couldn't auto-copy - here's the link: "+text);
+}
+
+function renderH2H(myWins){
+  const box=$("h2hBox");
+  if(!challenge){ box.classList.add("hidden"); return; }
+  box.classList.remove("hidden");
+  const oppWins=challenge.w;
+  let verdict, col;
+  if(myWins>oppWins){ verdict="\u{1F3C6} You win!"; col="var(--green)"; }
+  else if(myWins<oppWins){ verdict="You lose - they had the better club."; col="var(--red)"; }
+  else { verdict="Dead heat - a tie!"; col="var(--ink)"; }
+  box.innerHTML=`
+    <div class="h2h-line">
+      <div><div class="h2h-name">You</div><div class="h2h-w">${myWins}</div></div>
+      <div class="h2h-vs">vs</div>
+      <div><div class="h2h-name">Challenger</div><div class="h2h-w">${oppWins}</div></div>
+    </div>
+    <div class="h2h-verdict" style="color:${col}">${verdict}</div>`;
+}
+
+function renderSharedView(p){
+  roster = p.r.map(([slot,fr,dec,name,year])=>{
+    const rows=PLAYERS[`${fr}|${dec}`]||[];
+    const row=rows.find(x=>x[0]===name && x[1]===year) || rows.find(x=>x[0]===name);
+    const pl = row ? parsePlayer(row,dec) : {name,year,obp:0,slg:0,hr:0,obpF:0,slgF:0,avg:0,rbi:0,r:0,sb:0,positions:[slot]};
+    return {slot, player:pl, franch:fr, dec};
+  });
+  let rating=0,sumOff=0,sumPos=0,sumObp=0,sumSlg=0;
+  roster.forEach(r=>{ const off=offScore(r.player); const pos=(POS_ADJ[r.slot]||0)*0.10;
+    rating+=off+pos; sumOff+=off; sumPos+=pos; sumObp+=r.player.obpF; sumSlg+=r.player.slgF; });
+  rating/=9;
+  $("setup").classList.add("hidden"); $("game").classList.add("hidden");
+  showResult(p.w,162-p.w,{obp:sumObp/9,slg:sumSlg/9,off:sumOff/9,pos:sumPos/9,rating});
+}
+
+function showChallengeBanner(){
+  const b=$("challengeBanner");
+  b.classList.remove("hidden");
+  b.innerHTML=`<div>\u2694 <b>You've been challenged!</b></div>
+    <div class="cb-rec">Beat ${challenge.w} wins</div>
+    <div style="font-size:12.5px;margin-top:4px;opacity:.9">Build your own all-time lineup below. We'll compare records at the end.</div>`;
+}
+
+function init(){
+  loadSettings();
+  const qs=new URLSearchParams(location.search);
+  const sTok=qs.get('s'), cTok=qs.get('c');
+  if(cTok){
+    const p=decodeResult(cTok);
+    if(p){ challenge=p; showChallengeBanner(); }
+  } else if(sTok){
+    const p=decodeResult(sTok);
+    if(p){ renderSharedView(p); }
+  }
+}
+init();
+
 </script>
 </body>
 </html>
